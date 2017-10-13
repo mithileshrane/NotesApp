@@ -1,20 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/yellowBackground"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.samrans.noteapp.SplashActivity"
+    tools:context="com.example.samrans.noteapp.ui.activites.SplashActivity"
     tools:showIn="@layout/activity_splash">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/note_empty"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/welcome"
+        android:id="@+id/tv_welcome"
+        android:layout_marginTop="56dp"
+        android:textColor="@color/yellowA200"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/welcome"/>
 
-</android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:layout_width="@dimen/welcome_image"
+        android:layout_height="@dimen/welcome_image"
+        android:src="@drawable/ic_note_black_48dp"
+        android:layout_centerInParent="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/getStarted"
+        android:background="@color/textcolorbackground"
+        android:textColor="@color/colorPrimary"
+        android:padding="16dp"
+        android:id="@+id/btngetStarted"
+        android:layout_alignParentBottom="true"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="56dp"/>
+
+
+</RelativeLayout>
