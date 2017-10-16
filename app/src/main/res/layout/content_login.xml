@@ -34,7 +34,7 @@
                 <ImageView
                     android:id="@+id/iv_1"
                     android:layout_width="80dp"
-                    android:layout_height="90dp"
+                    android:layout_height="80dp"
                     app:srcCompat="@drawable/ic_sync_black_48dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
@@ -79,8 +79,16 @@
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="15dp"
                 android:text="-------OR-------"
-                android:textColor="@android:color/black"
+                android:id="@+id/view_or"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="14sp" />
+            <com.facebook.login.widget.LoginButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fbLogin"
+                android:layout_below="@+id/view_or"
+                android:layout_centerHorizontal="true"/>
+
         </RelativeLayout>
 
     </RelativeLayout>

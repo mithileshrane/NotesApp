@@ -1,5 +1,7 @@
 package com.example.samrans.noteapp.ui.activites;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,12 +14,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.example.samrans.noteapp.R;
+import com.example.samrans.noteapp.models.Login;
+import com.example.samrans.noteapp.utils.SessionManager;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DashActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private SessionManager sessionManager;
+    Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +43,8 @@ public class DashActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+        mContext=this;
+        sessionManager=new SessionManager(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -40,8 +52,27 @@ public class DashActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        CircleImageView headerImage = (CircleImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
+        TextView headerName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_person_name);
+        TextView headerEmail = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_email_id);
+        Login login=sessionManager.getUser();
+        if ( login!= null) {
+            Picasso.with(mContext).load(login.getImageurl()).
+                    error(R.drawable.ic_account_circle_white_48dp).
+                    placeholder(R.drawable.ic_account_circle_white_48dp).
+                    into(headerImage);
+            headerEmail.setText(login.getEmailid());
+            headerName.setText(login.getName());
+        }
+//        navigationView.getHeaderView(0).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(DashActivity.this, ProfileActivity.class));
+//            }
+//        });
     }
 
     @Override

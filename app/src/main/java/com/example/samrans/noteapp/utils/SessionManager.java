@@ -3,6 +3,7 @@ package com.example.samrans.noteapp.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.samrans.noteapp.models.Login;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -46,20 +47,20 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-//    public boolean isLoggedIn() {
-//        return pref.getBoolean(IS_LOGIN, false);
-//    }
-//    public Login getUser() {
-//        Login login;
-//        Gson gson = new Gson();
-//        String json = pref.getString(KEY_LOGIN_DATA, "");
-////        MyObject obj = gson.fromJson(json, Duration.class);
-//        Type collectionType = new TypeToken<Login>(){}.getType();
-//        login = gson.fromJson(json, collectionType);
-//        if (login!=null)
-//            return login;
-//        return null;
-//    }
+    public boolean isLoggedIn() {
+        return pref.getBoolean(IS_LOGIN, false);
+    }
+    public Login getUser() {
+        Login login;
+        Gson gson = new Gson();
+        String json = pref.getString(KEY_LOGIN_DATA, "");
+//        MyObject obj = gson.fromJson(json, Duration.class);
+        Type collectionType = new TypeToken<Login>(){}.getType();
+        login = gson.fromJson(json, collectionType);
+        if (login!=null)
+            return login;
+        return null;
+    }
 
     public boolean getStatus(){
         return pref.getBoolean(KEY_STATUS,false);
@@ -76,13 +77,13 @@ public class SessionManager {
         editor.remove(KEY_LOGIN_DATA);
         editor.apply();
     }
-//    public void setLoginData(Login login) {
-//        Gson gson = new Gson();
-//        String json = gson.toJson(login); // myObject - instance of MyObject
-//        editor.putString(KEY_LOGIN_DATA, json);
-//        editor.putBoolean(IS_LOGIN, true);
-//        editor.commit();
-//    }
+    public void setLoginData(Login login) {
+        Gson gson = new Gson();
+        String json = gson.toJson(login); // myObject - instance of MyObject
+        editor.putString(KEY_LOGIN_DATA, json);
+        editor.putBoolean(IS_LOGIN, true);
+        editor.commit();
+    }
 
     public void setStatus(boolean message){
         editor.putBoolean(KEY_STATUS, message);

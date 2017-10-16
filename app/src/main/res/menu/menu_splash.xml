@@ -10,6 +10,6 @@
         app:showAsAction="never" />
     <item android:id="@+id/action_view_change"
         android:title="@string/view"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:icon="@drawable/ic_view_quilt_white_48dp"/>
 </menu>

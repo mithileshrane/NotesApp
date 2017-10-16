@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import in.infiny.com.pickcupcoffeeshop.interfaces.Logout;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -46,45 +45,45 @@ public class CommonUtils {
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-    public static void callLogout(final Context context, final Logout ilogout) {
-        new AlertDialog.Builder(context)
-                .setMessage("Exit app?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (ilogout != null) {
-                           ilogout.logoutAndSessionDelete();
-//                                intent.addCategory(Intent.CATEGORY_HOME);
-//                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
-//                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                context.startActivity(intent);
-//                                ((Activity) (context)).finish();
-//                                System.exit(0);
-
-
+//    public static void callLogout(final Context context, final Logout ilogout) {
+//        new AlertDialog.Builder(context)
+//                .setMessage("Exit app?")
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        if (ilogout != null) {
+//                           ilogout.logoutAndSessionDelete();
+////                                intent.addCategory(Intent.CATEGORY_HOME);
+////                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
+////                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+////                                context.startActivity(intent);
+////                                ((Activity) (context)).finish();
+////                                System.exit(0);
+//
+//
+////                            intent.addCategory(Intent.CATEGORY_HOME);
+////                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
+////                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+////                            context.startActivity(intent);
+////                            ((Activity) (context)).finish();
+////                            System.exit(0);
+//                        }else {
+//                            Intent intent = new Intent(Intent.ACTION_MAIN);
 //                            intent.addCategory(Intent.CATEGORY_HOME);
 //                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
 //                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                            context.startActivity(intent);
 //                            ((Activity) (context)).finish();
 //                            System.exit(0);
-                        }else {
-                            Intent intent = new Intent(Intent.ACTION_MAIN);
-                            intent.addCategory(Intent.CATEGORY_HOME);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent);
-                            ((Activity) (context)).finish();
-                            System.exit(0);
-                        }
-
-                    }
-                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        }).show();
-    }
+//                        }
+//
+//                    }
+//                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//            }
+//        }).show();
+//    }
 
     public static OkHttpClient createCachedClient(final Context context) {
         File httpCacheDirectory = new File(context.getCacheDir(), "cache_file");

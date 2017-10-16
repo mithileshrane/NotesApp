@@ -11,4 +11,7 @@
     <string name="notes_here">Notes will appear here</string>
     <string name="view">View</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="facebook_app_id">291123858058431</string>
+    <string name="fb_login_protocol_scheme">fb291123858058431</string>
+
 </resources>
