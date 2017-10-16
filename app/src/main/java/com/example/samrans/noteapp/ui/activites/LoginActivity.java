@@ -1,5 +1,6 @@
 package com.example.samrans.noteapp.ui.activites;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -50,6 +51,7 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class LoginActivity extends BaseActivity implements
         GoogleApiClient.OnConnectionFailedListener {
@@ -83,6 +85,11 @@ public class LoginActivity extends BaseActivity implements
     private CallbackManager callbackManager;
     SessionManager sessionManager;
     private Login login;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,12 +213,12 @@ public class LoginActivity extends BaseActivity implements
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            Login login=new Login();
+                            Login login = new Login();
                             login.setName(acct.getDisplayName());
                             login.setId(acct.getId());
                             login.setImageurl(acct.getPhotoUrl().toString());
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user,login);
+                            updateUI(user, login);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());

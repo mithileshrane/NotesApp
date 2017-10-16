@@ -6,4 +6,5 @@
     <color name="yellowA200">#FDD835</color>
     <color name="yellowBackground">#FFF3E0</color>
     <color name="textcolorbackground">#F9FBE7</color>
+    <color name="cardColor">#f8ffe8</color>
 </resources>

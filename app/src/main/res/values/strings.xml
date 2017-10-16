@@ -13,5 +13,9 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="facebook_app_id">291123858058431</string>
     <string name="fb_login_protocol_scheme">fb291123858058431</string>
-
+    <string name="title_activity_add_note">AddNoteActivity</string>
+    <string-array name="testArray">
+        <item>Text Note</item>
+        <item>Checked Note</item>
+    </string-array>
 </resources>

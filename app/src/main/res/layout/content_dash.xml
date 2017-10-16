@@ -14,6 +14,8 @@
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
+            android:visibility="gone"
+            android:id="@+id/recylerViewNotes"
             android:layout_height="match_parent"
             android:scrollbars="none" />
 
@@ -26,6 +28,7 @@
             android:id="@+id/progress_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_centerInParent="true"
             android:indeterminateTint="@color/colorPrimary"
             android:indeterminateTintMode="src_in" />
@@ -33,25 +36,25 @@
         <RelativeLayout
             android:id="@+id/no_data_found"
             android:layout_width="wrap_content"
-
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:alpha="0.3">
 
             <ImageView
                 android:id="@+id/iv_no_data"
-                android:layout_centerHorizontal="true"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
                 app:srcCompat="@drawable/ic_speaker_notes_black_48dp" />
 
             <TextView
                 android:id="@+id/tv_no_data"
-                android:gravity="center"
-                android:layout_marginTop="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/iv_no_data"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
                 android:text="@string/notes_here" />
         </RelativeLayout>
     </RelativeLayout>
