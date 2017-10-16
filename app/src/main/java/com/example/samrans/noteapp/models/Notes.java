@@ -15,7 +15,7 @@ public class Notes implements Serializable{
     String headerNote;
     String details;
     String colorNote;
-    int NoteColor;
+    int NoteColor=-1;
     boolean oneField;
 
     public int type;

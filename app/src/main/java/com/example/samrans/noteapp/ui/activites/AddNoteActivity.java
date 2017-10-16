@@ -3,21 +3,23 @@ package com.example.samrans.noteapp.ui.activites;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.samrans.noteapp.R;
 import com.example.samrans.noteapp.models.Notes;
@@ -48,9 +50,11 @@ public class AddNoteActivity extends AppCompatActivity {
     TextView tvTitle;
     @BindView(R.id.ivbtn_color)
     ImageButton ivbtnColor;
+    @BindView(R.id.cardColor)
+    CardView cardColor;
     private Intent intent;
-    boolean click=false;
-    private int colorSelect=0;
+    boolean click = false;
+    private int colorSelect = 0;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -92,7 +96,7 @@ public class AddNoteActivity extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.ll_add_more, R.id.fabAddNote,R.id.ivbtn_color})
+    @OnClick({R.id.ll_add_more, R.id.fabAddNote, R.id.ivbtn_color})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_add_more:
@@ -148,28 +152,31 @@ public class AddNoteActivity extends AppCompatActivity {
         final View view_color = dialoglayout.findViewById(R.id.view_color);
 
 
-
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                click=true;
+                click = true;
             }
         });
+
         final AlertDialog alertDialog = builder.create();
         alertDialog.setView(dialoglayout);
         alertDialog.show();
+        Button button=alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        button.setBackgroundColor(Color.LTGRAY);
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                if (click){
+                if (click) {
                     ivbtnColor.setBackgroundColor(colorSelect);
+                    cardColor.setCardBackgroundColor(colorSelect);
                 }
             }
         });
         colorPickerView.setColorListener(new ColorPickerView.ColorListener() {
             @Override
             public void onColorSelected(int color) {
-                colorSelect=color;
+                colorSelect = color;
                 tv_hexColor.setText(String.valueOf(color));
                 view_color.setBackgroundColor(color);
             }
@@ -181,6 +188,7 @@ public class AddNoteActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtra("header", edtHeader.getText().toString());
         intent.putExtra("details", edtNoteDetail.getText().toString());
+        intent.putExtra("color", colorSelect);
         setResult(RESULT_OK, intent);
         finish();
     }

@@ -243,10 +243,16 @@ public class DashActivity extends AppCompatActivity
                 notes.setHeaderNote(data.getStringExtra("header"));
         }
 
+        if (data.getStringExtra("color") != null) {
+            if (!TextUtils.isEmpty(data.getStringExtra("color")))
+                notes.setNoteColor(data.getIntExtra("color",-1));
+        }
+
         if (notes != null) {
             if (notes.isOneField()) {
                 notesArrayList.add(0, notes);
                 notesAdapter.notifyItemInserted(notesArrayList.size() - 1);
+                notesAdapter.notifyDataSetChanged();
                 noDataFound.setVisibility(View.GONE);
                 relProgress.setVisibility(View.GONE);
                 recylerViewNotes.setVisibility(View.VISIBLE);
