@@ -18,11 +18,21 @@ public class Notes implements Serializable{
     int NoteColor=-1;
     boolean oneField;
 
+    public String getPrevChildKey() {
+        return prevChildKey;
+    }
+
+    public void setPrevChildKey(String prevChildKey) {
+        this.prevChildKey = prevChildKey;
+    }
+
+    String prevChildKey;
+
     public int type;
     boolean checkTypeNote;
     String image;
     boolean hasFinishedCheck;
-    Date noteDate;
+    String noteDate;
 
     public boolean isOneField() {
         return oneField;
@@ -85,11 +95,11 @@ public class Notes implements Serializable{
         this.hasFinishedCheck = hasFinishedCheck;
     }
 
-    public Date getNoteDate() {
+    public String getNoteDate() {
         return noteDate;
     }
 
-    public void setNoteDate(Date noteDate) {
+    public void setNoteDate(String noteDate) {
         this.noteDate = noteDate;
     }
 

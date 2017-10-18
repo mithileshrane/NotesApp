@@ -73,7 +73,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             noteHolderText.edt_note_detail.setClickable(false);
             int val=notesArrayList.get(position).getNoteColor();
             if(val!=-1)
-            noteHolderText.cardColor.setCardBackgroundColor(val);
+                noteHolderText.cardColor.setCardBackgroundColor(val);
 
         }
     }
@@ -115,7 +115,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             edt_note_detail = (EditText) itemView.findViewById(R.id.edt_note_detail);
             edt_header = (EditText) itemView.findViewById(R.id.edt_header);
             cardColor = (CardView) itemView.findViewById(R.id.cardColor);
-            itemView.setOnClickListener(new View.OnClickListener() {
+            cardColor.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     clickListen.click(getAdapterPosition(),notesArrayList.get(getAdapterPosition()));

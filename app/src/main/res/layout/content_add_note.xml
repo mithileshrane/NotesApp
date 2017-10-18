@@ -15,10 +15,10 @@
         android:visibility="gone">
 
         <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
             android:id="@+id/cardColor"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="5dp"
+            android:elevation="4dp"
             app:cardBackgroundColor="@color/cardColor"
             app:cardCornerRadius="2dp"
             app:cardUseCompatPadding="true">
@@ -27,11 +27,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <TextView
+                    android:id="@+id/tv_date_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="fdsfjflksdfj" />
+
                 <EditText
                     android:id="@+id/edt_header"
                     style="@style/editTextStyleHead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_date_edit"
                     android:background="@null"
                     android:hint="Title"
                     android:inputType="text"
@@ -56,6 +64,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone">
+
+
         <include
             android:id="@+id/vcheck_type"
             layout="@layout/check_type"

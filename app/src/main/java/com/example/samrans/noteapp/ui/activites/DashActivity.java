@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,8 +37,24 @@ import com.example.samrans.noteapp.models.Login;
 import com.example.samrans.noteapp.models.Notes;
 import com.example.samrans.noteapp.utils.ClickListen;
 import com.example.samrans.noteapp.utils.SessionManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -46,7 +64,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class DashActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ClickListen {
+        implements NavigationView.OnNavigationItemSelectedListener, ClickListen, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQUEST_ADD_NOTE = 100;
     @BindView(R.id.toolbar)
@@ -76,7 +94,8 @@ public class DashActivity extends AppCompatActivity
     private String[] mTestArray;
     ClickListen clickListen;
     boolean isSwitchView;
-
+    private GoogleApiClient mGoogleApiClient;
+    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
@@ -129,6 +148,63 @@ public class DashActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         clickListen = this;
+        final DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference(firebaseUser.getUid());
+
+//// Attach a listener to read the data at our posts reference
+//        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Notes post = dataSnapshot.getValue(Notes.class);
+//                Toast.makeText(mContext,"onDataChange",Toast.LENGTH_SHORT).show();
+//                System.out.println(post);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Toast.makeText(mContext,"",Toast.LENGTH_SHORT).show();
+//                System.out.println("The read failed:onCancelled " + databaseError.getCode());
+//            }
+//
+//        });
+
+        mDatabaseRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                Notes notes = dataSnapshot.getValue(Notes.class);
+                if (notes != null) {
+                    if (notes.isOneField()) {
+                        notesArrayList.add(0, notes);
+                        notesAdapter.notifyItemInserted(notesArrayList.size() - 1);
+                        notesAdapter.notifyDataSetChanged();
+                        noDataFound.setVisibility(View.GONE);
+                        relProgress.setVisibility(View.GONE);
+                        recylerViewNotes.setVisibility(View.VISIBLE);
+                    }
+                }
+//                Toast.makeText(mContext,"onChildAdded",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
+                Toast.makeText(mContext,"onChildChanged",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Toast.makeText(mContext,"onChildRemoved",Toast.LENGTH_SHORT).show();
+            }
+
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {
+                Toast.makeText(mContext,"onChildMoved",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(mContext,"onCancelled",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -172,17 +248,21 @@ public class DashActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_likeus) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_logout) {
+            logoutUser();
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_profile) {
+
+        } else if (id == R.id.nav_view) {
 
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
+
+        }else if (id == R.id.nav_view) {
 
         }
 
@@ -191,25 +271,30 @@ public class DashActivity extends AppCompatActivity
         return true;
     }
 
+
     @OnClick(R.id.fab)
     public void onViewClicked() {
 
-        mTestArray = getResources().getStringArray(R.array.testArray);
+        if (firebaseUser != null) {
+            mTestArray = getResources().getStringArray(R.array.testArray);
 
-        final ArrayAdapter<String> spinner_countries = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item,
-                mTestArray);
+            final ArrayAdapter<String> spinner_countries = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item,
+                    mTestArray);
 
-        new AlertDialog.Builder(mContext)
-                .setTitle("Select Category")
-                .setAdapter(spinner_countries, new DialogInterface.OnClickListener() {
+            new AlertDialog.Builder(mContext)
+                    .setTitle("Select Category")
+                    .setAdapter(spinner_countries, new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(DashActivity.this, AddNoteActivity.class);
-                        intent.putExtra("type", which);
-                        startActivityForResult(intent, REQUEST_ADD_NOTE);
-                        dialog.dismiss();
-                    }
-                }).create().show();
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(DashActivity.this, AddNoteActivity.class);
+                            intent.putExtra("type", which);
+                            startActivityForResult(intent, REQUEST_ADD_NOTE);
+                            dialog.dismiss();
+                        }
+                    }).create().show();
+        } else {
+            Toast.makeText(mContext, "User unauthicated,please login again", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -228,45 +313,7 @@ public class DashActivity extends AppCompatActivity
         }
     }
 
-    private void getData(Intent data) {
-        Notes notes = new Notes();
-        if (data.getStringExtra("details") != null) {
-            if (!TextUtils.isEmpty(data.getStringExtra("details"))) {
-                notes.setDetails(data.getStringExtra("details"));
-                notes.setOneField(true);
-            }
-        } else {
-            notes = null;
-        }
-        if (data.getStringExtra("header") != null) {
-            if (!TextUtils.isEmpty(data.getStringExtra("header")))
-                notes.setHeaderNote(data.getStringExtra("header"));
-        }
 
-        if (data.getStringExtra("color") != null) {
-            if (!TextUtils.isEmpty(data.getStringExtra("color")))
-                notes.setNoteColor(data.getIntExtra("color",-1));
-        }
-
-        if (notes != null) {
-            if (notes.isOneField()) {
-                notesArrayList.add(0, notes);
-                notesAdapter.notifyItemInserted(notesArrayList.size() - 1);
-                notesAdapter.notifyDataSetChanged();
-                noDataFound.setVisibility(View.GONE);
-                relProgress.setVisibility(View.GONE);
-                recylerViewNotes.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    public void switchView() {
-        if (notesArrayList.size() > 0) {
-            recylerViewNotes.setLayoutManager(isSwitchView ? new LinearLayoutManager(this) : new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-            isSwitchView = !isSwitchView;
-            supportInvalidateOptionsMenu();
-        }
-    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -275,6 +322,23 @@ public class DashActivity extends AppCompatActivity
         }
         return super.onPrepareOptionsMenu(menu);
 
+    }
+
+
+    @Override
+    public void click(int position, Notes notes) {
+        Toast.makeText(mContext, "Edit Mode", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(DashActivity.this, AddNoteActivity.class);
+        intent.putExtra("type", notes.getType());
+        intent.putExtra("data", notes);
+        startActivityForResult(intent, REQUEST_ADD_NOTE);
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d("Dash", "onConnectionFailed:" + connectionResult);
+        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
     private void initiz() {
@@ -298,13 +362,69 @@ public class DashActivity extends AppCompatActivity
 
     }
 
-    @Override
-    public void click(int position, Notes notes) {
-        Toast.makeText(mContext, "Edit Mode", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(DashActivity.this, AddNoteActivity.class);
-        intent.putExtra("type", notes.getType());
-        intent.putExtra("data", notes);
-        startActivityForResult(intent, REQUEST_ADD_NOTE);
+    private void getData(Intent data) {
+//        Notes notes = new Notes();
+//        if (data.getStringExtra("details") != null) {
+//            if (!TextUtils.isEmpty(data.getStringExtra("details"))) {
+//                notes.setDetails(data.getStringExtra("details"));
+//                notes.setOneField(true);
+//            }
+//        } else {
+//            notes = null;
+//        }
+//        if (data.getStringExtra("header") != null) {
+//            if (!TextUtils.isEmpty(data.getStringExtra("header")))
+//                notes.setHeaderNote(data.getStringExtra("header"));
+//        }
+//
+//
+//        notes.setNoteColor(data.getIntExtra("color", -1));
 
+        Notes notes = (Notes) data.getExtras().getSerializable("note");
+
+        if (notes != null) {
+            if (notes.isOneField()) {
+                notesArrayList.add(0, notes);
+                notesAdapter.notifyItemInserted(notesArrayList.size() - 1);
+                notesAdapter.notifyDataSetChanged();
+                noDataFound.setVisibility(View.GONE);
+                relProgress.setVisibility(View.GONE);
+                recylerViewNotes.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    public void switchView() {
+        if (notesArrayList.size() > 0) {
+            recylerViewNotes.setLayoutManager(isSwitchView ? new LinearLayoutManager(mContext) : new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+            isSwitchView = !isSwitchView;
+//            supportInvalidateOptionsMenu();
+        }
+    }
+    private void logoutUser() {
+
+
+        // Google sign out
+        // [START config_signin]
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        // [END config_signin]
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+                        // Firebase sign out
+                        FirebaseAuth.getInstance().signOut();
+                        sessionManager.clear();
+                    }
+                });
     }
 }
